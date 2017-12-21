@@ -3,51 +3,46 @@ import { Link } from 'react-router-dom'
 import Bookshelf from './Bookshelf'
 
 class ListBooks extends Component {
-  state = {
-
-  }
+  state = { }
   render() {
     const { books } = this.props
-
-    let bookshelves = {
-      name: '',
-      books: []
-    }
+    let bookshelves = []
 
     /* recreate the data structure object
-      {
-        name:"currently reading"
-        books: [
-
-        ]
+      [{
+        name:"currently reading",
+        books: []
       },
       {
-        name:"want to read"
-        books: [
-
-        ]
+        name:"want to read",
+        books: []
       },
       {
-        name:"read"
-        books: [
-
-        ]
-      }
+        name:"read",
+        books: []
+      }]
     */
-
+    let categories = []
+    // extract
     books.forEach((book, index) => (
-      // bookshelves.name = book.shelf
-      bookshelves.books.concat(book)
-    ));
-
-    console.log('bookshelves', bookshelves)
-
-    // convert camelCase to Regular Form
-    const bookshelvesName = Object.keys(bookshelves).map((item) => (
-      item.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => { return str.toUpperCase() })
+      categories.push(book.shelf)
     ))
-
-    console.log(bookshelvesName)
+    // unique categories
+    categories = [...new Set(categories)]
+    let temp = []
+    categories.forEach((category) => (
+      books.forEach((book) => (
+        book.shelf === category ? temp.push(book) : undefined
+      )),
+      bookshelves.push(
+        {
+          // convert camelCase to Regular Form
+          name:category.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => { return str.toUpperCase() }),
+          books:temp
+        }
+      ),
+      temp = []
+    ))
 
     return (
       <div className="list-books">
@@ -56,8 +51,8 @@ class ListBooks extends Component {
         </div>
         <div className="list-books-content">
           <div>
-            {bookshelvesName.map((shelfName, index) => (
-              <Bookshelf key={index} shelfName={shelfName} books={books} />
+            {bookshelves.map((shelf, index) => (
+              <Bookshelf key={index} shelfName={shelf.name} books={shelf.books} />
             ))}
           </div>
         </div>
