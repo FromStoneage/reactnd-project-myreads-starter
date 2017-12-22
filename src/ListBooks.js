@@ -30,7 +30,7 @@ class ListBooks extends Component {
     })
 
     // unique categories
-    categories = [...new Set(categories)]
+    categories = [...new Set(categories)].sort()
     let temp = []
     categories.forEach((category) => {
       books.forEach((book) => (
