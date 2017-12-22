@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import Bookshelf from './Bookshelf'
 
 class ListBooks extends Component {
-  state = { }
-  render() {
+  // not the most efficient way to recreate the data structure
+  getBookShelves = () => {
     const { books } = this.props
     let bookshelves = []
 
@@ -37,13 +37,17 @@ class ListBooks extends Component {
       bookshelves.push(
         {
           // convert camelCase to Regular Form
-          name:category.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => { return str.toUpperCase() }),
+          name:category.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => {
+            return str.toUpperCase() }),
           books:temp
         }
       ),
-      temp = []
+      temp = [] // reset
     ))
+    return bookshelves
+  }
 
+  render() {
     return (
       <div className="list-books">
         <div className="list-books-title">
@@ -51,8 +55,11 @@ class ListBooks extends Component {
         </div>
         <div className="list-books-content">
           <div>
-            {bookshelves.map((shelf, index) => (
-              <Bookshelf key={index} shelfName={shelf.name} books={shelf.books} />
+            {this.getBookShelves().map((shelf, index) => (
+              <Bookshelf key={index}
+                         shelfName={shelf.name}
+                         books={shelf.books}
+                         onBookUpdated={this.props.onBookUpdated} />
             ))}
           </div>
         </div>
