@@ -21,10 +21,18 @@ class BooksApp extends React.Component {
     BooksAPI.update(book, newShelf);
 
     const { books } = this.state
+    let found = false
     books.forEach((item) => {
-      if(item.id === book.id)
+      if(item.id === book.id){
+        found = true
         item.shelf = newShelf
+      }
     })
+    // when new book added from search
+    if (!found) {
+      book.shelf = newShelf
+      books.push(book)
+    }
 
     this.setState({ books })
   }

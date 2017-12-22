@@ -10,16 +10,11 @@ class SearchBooks extends Component {
   }
 
   change = (event) => {
-    // console.log('SearchBook', event.target.value)
     this._search(event.target.value)
-
-    // const results = BooksAPI.search(event.target.value)
-    // console.log('results', results)
   }
 
   _search = debounce(async (value) => {
     const results = await BooksAPI.search(value)
-    console.log('results', results)
     this.setState({results})
   }, 500)
 

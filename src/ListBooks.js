@@ -24,16 +24,18 @@ class ListBooks extends Component {
     */
     let categories = []
     // extract
-    books.forEach((book, index) => (
-      categories.push(book.shelf)
-    ))
+    books.forEach((book, index) => {
+      if(book.shelf !== 'none')
+        categories.push(book.shelf)
+    })
+
     // unique categories
     categories = [...new Set(categories)]
     let temp = []
-    categories.forEach((category) => (
+    categories.forEach((category) => {
       books.forEach((book) => (
         book.shelf === category ? temp.push(book) : undefined
-      )),
+      ))
       bookshelves.push(
         {
           // convert camelCase to Regular Form
@@ -41,9 +43,9 @@ class ListBooks extends Component {
             return str.toUpperCase() }),
           books:temp
         }
-      ),
+      )
       temp = [] // reset
-    ))
+    })
     return bookshelves
   }
 
