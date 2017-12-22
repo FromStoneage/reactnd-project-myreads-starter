@@ -10,10 +10,18 @@ class SearchBooks extends Component {
   }
 
   change = (event) => {
-    console.log('SearchBook', event.target.value)
-    const results = BooksAPI.search(event.target.value)
-    console.log('results', results)
+    // console.log('SearchBook', event.target.value)
+    this._search(event.target.value)
+
+    // const results = BooksAPI.search(event.target.value)
+    // console.log('results', results)
   }
+
+  _search = debounce(async (value) => {
+    const results = await BooksAPI.search(value)
+    console.log('results', results)
+    this.setState({results})
+  }, 500)
 
   render() {
     return (
@@ -21,19 +29,18 @@ class SearchBooks extends Component {
         <div className="search-books-bar">
           <Link to='/' className='close-search'>Close</Link>
           <div className="search-books-input-wrapper">
-            {/*
-              NOTES: The search from BooksAPI is limited to a particular set of search terms.
-              You can find these search terms here:
-              https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-              However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-              you don't find a specific author or title. Every search is limited by search terms.
-            */}
             <input type="text" placeholder="Search by title or author" onChange={this.change}/>
           </div>
         </div>
         <div className="search-books-results">
-          <ol className="books-grid"></ol>
+          <ol className="books-grid">
+            {this.state.results.map((book, index) => (
+                <li key={index}>
+                  <Books book={book}
+                         onBookUpdated={this.props.onBookUpdated} />
+                </li>
+            ))}
+          </ol>
         </div>
       </div>
     )
