@@ -15,7 +15,19 @@ class SearchBooks extends Component {
 
   _search = debounce(async (value) => {
     const results = await BooksAPI.search(value)
-    this.setState({results})
+    // merge current book shelf books in the search results
+    if (results && Array.isArray(results)){
+      console.log('this.props.books', this.props.books)
+      results.forEach((item) => {
+        this.props.books.forEach(currentBook => {
+          if(item.id === currentBook.id){
+            item.shelf = currentBook.shelf
+          }
+        });
+      })
+
+      this.setState({results})
+    }
   }, 500)
 
   render() {

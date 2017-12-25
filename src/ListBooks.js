@@ -9,18 +9,7 @@ class ListBooks extends Component {
     let bookshelves = []
 
     /* recreate the data structure object
-      [{
-        name:"currently reading",
-        books: []
-      },
-      {
-        name:"want to read",
-        books: []
-      },
-      {
-        name:"read",
-        books: []
-      }]
+      [{ name:'', books: [] }]
     */
     let categories = []
     // extract
