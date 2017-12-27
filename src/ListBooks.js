@@ -46,8 +46,8 @@ class ListBooks extends Component {
         </div>
         <div className="list-books-content">
           <div>
-            {this.getBookShelves().map((shelf, index) => (
-              <Bookshelf key={index}
+            {this.getBookShelves().map((shelf) => (
+              <Bookshelf key={shelf.name}
                          shelfName={shelf.name}
                          books={shelf.books}
                          onBookUpdated={this.props.onBookUpdated} />

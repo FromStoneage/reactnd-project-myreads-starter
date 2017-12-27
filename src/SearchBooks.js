@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import Books from './Books'
 import * as BooksAPI from './BooksAPI'
-import debounce from 'lodash/debounce';
+import debounce from 'lodash/debounce'
 
 class SearchBooks extends Component {
   state = {
@@ -10,18 +10,24 @@ class SearchBooks extends Component {
   }
 
   change = (event) => {
-    this._search(event.target.value)
+    let searchTerm = event.target.value;
+    if(searchTerm && searchTerm.length){
+      this._search(searchTerm)
+    }else{
+      this.setState({ results : [] })
+    }
   }
 
   _search = debounce(async (value) => {
     const results = await BooksAPI.search(value)
     // merge current book shelf books in the search results
     if (results && Array.isArray(results)){
-      console.log('this.props.books', this.props.books)
       results.forEach((item) => {
         this.props.books.forEach(currentBook => {
           if(item.id === currentBook.id){
             item.shelf = currentBook.shelf
+          }else{
+            item.shelf = 'none'
           }
         });
       })
@@ -41,8 +47,8 @@ class SearchBooks extends Component {
         </div>
         <div className="search-books-results">
           <ol className="books-grid">
-            {this.state.results.map((book, index) => (
-                <li key={index}>
+            {this.state.results.map((book) => (
+                <li key={book.id}>
                   <Books book={book}
                          onBookUpdated={this.props.onBookUpdated} />
                 </li>

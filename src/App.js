@@ -18,23 +18,38 @@ class BooksApp extends React.Component {
   }
 
   updateBook = (book, newShelf) => {
-    BooksAPI.update(book, newShelf);
-
     const { books } = this.state
-    let found = false
-    books.forEach((item) => {
-      if(item.id === book.id){
-        found = true
-        item.shelf = newShelf
+    let updatedBooks = []
+    BooksAPI.update(book, newShelf).then((result) => {
+      if(result) {
+        // filter down the book that were updated
+        updatedBooks = books.filter((item) =>{
+          for(let key in result) {
+            if(result[key].includes(item.id) && item.shelf !== key){
+              item.shelf = key
+              return item
+            }
+          }
+        })
+
+        // handles when a book is set to none book shelf
+        if(newShelf === 'none'){
+          updatedBooks = books.filter(b => b.id === book.id)
+          updatedBooks.forEach(b => b.shelf = newShelf)
+        }
+
+        // merge updated book with states and update the state
+        updatedBooks = Object.assign({}, books, updatedBooks)
+        this.setState({ updatedBooks })
+        updatedBooks = []
       }
     })
-    // when new book added from search
-    if (!found) {
-      book.shelf = newShelf
-      books.push(book)
-    }
 
-    this.setState({ books })
+    // handles when a new book added to the shelf
+    if( books.map(x => x.id).includes(book.id) === false ){
+      book.shelf = newShelf
+      this.setState( { books: books.concat(book) })
+    }
   }
 
   render() {
