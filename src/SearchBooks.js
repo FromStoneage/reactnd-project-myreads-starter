@@ -10,29 +10,27 @@ class SearchBooks extends Component {
   }
 
   change = (event) => {
+    const { books } = this.props
     let searchTerm = event.target.value;
     if(searchTerm && searchTerm.length){
-      this._search(searchTerm)
+      this._search(searchTerm, books)
     }else{
       this.setState({ results : [] })
     }
   }
 
-  _search = debounce(async (value) => {
-    const results = await BooksAPI.search(value)
+  _search = debounce(async (searchTerm, books) => {
+    const results = await BooksAPI.search(searchTerm)
     // merge current book shelf books in the search results
     if (results && Array.isArray(results)){
-      results.forEach((item) => {
-        this.props.books.forEach(currentBook => {
-          if(item.id === currentBook.id){
-            item.shelf = currentBook.shelf
-          }else{
-            item.shelf = 'none'
-          }
-        });
-      })
+      let mergedArray = []
+      let mergedResults = Object.assign({}, results, books)
 
-      this.setState({results})
+      for(let key in mergedResults){
+        mergedArray.push(mergedResults[key])
+      }
+
+      this.setState({results: mergedArray})
     }
   }, 500)
 
